@@ -9,6 +9,7 @@ import (
 	_ "github.com/labstack/echo/v4"
 	_ "github.com/labstack/echo/v4/middleware"
 	"strconv"
+	"time"
 	"user-management-service/internal/entity"
 	"user-management-service/internal/service"
 )
@@ -84,6 +85,7 @@ func (uh *userHandler) Login(c echo.Context) error {
 		"user_id":  user.ID,
 		"username": user.Username,
 		"email":    user.Email,
+		"exp":      jwt.NewNumericDate(time.Now().Add(2 * time.Hour)),
 	})
 
 	tokenString, err := token.SignedString([]byte("secret"))
