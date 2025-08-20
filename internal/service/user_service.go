@@ -2,8 +2,8 @@ package service
 
 import (
 	"errors"
+	"user-management-service/infrasturcture/log"
 	"user-management-service/internal/entity"
-	log "user-management-service/internal/infrasturcture"
 	"user-management-service/internal/repository"
 )
 

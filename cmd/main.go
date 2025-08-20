@@ -4,15 +4,16 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"time"
+	infrasturcture2 "user-management-service/infrasturcture/log"
 	"user-management-service/internal/api"
-	"user-management-service/internal/infrasturcture"
 	"user-management-service/internal/repository"
-	"user-management-service/internal/routes"
 	"user-management-service/internal/service"
+	middleware2 "user-management-service/middleware"
+	"user-management-service/routes"
 )
 
 func main() {
-	infrasturcture.InitLogger()
+	infrasturcture2.InitLogger()
 
 	userRepo := repository.NewUserRepository()
 	userService := service.NewUserService(userRepo)
@@ -21,7 +22,7 @@ func main() {
 	e := echo.New()
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
-	e.Use(middleware.RateLimiterWithConfig(infrasturcture.GetRateLimiter()))
+	e.Use(middleware.RateLimiterWithConfig(middleware2.GetRateLimiter()))
 	e.Use(middleware.ContextTimeout(10 * time.Second))
 
 	routes.SetupRoutes(e, userHandler)
