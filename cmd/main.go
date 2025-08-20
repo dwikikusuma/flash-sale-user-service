@@ -7,6 +7,7 @@ import (
 	"user-management-service/internal/api"
 	"user-management-service/internal/infrasturcture"
 	"user-management-service/internal/repository"
+	"user-management-service/internal/routes"
 	"user-management-service/internal/service"
 )
 
@@ -22,7 +23,8 @@ func main() {
 	e.Use(middleware.Recover())
 	e.Use(middleware.RateLimiterWithConfig(infrasturcture.GetRateLimiter()))
 	e.Use(middleware.ContextTimeout(10 * time.Second))
-	userHandler.RegisterRoutes(e)
+
+	routes.SetupRoutes(e, userHandler)
 
 	e.Logger.Fatal(e.Start(":8080"))
 }

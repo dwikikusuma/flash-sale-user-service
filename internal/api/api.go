@@ -15,7 +15,6 @@ import (
 )
 
 type UserHandler interface {
-	RegisterRoutes(e *echo.Echo)
 	GetUserByID(c echo.Context) error
 	CreateUser(c echo.Context) error
 	Login(c echo.Context) error
@@ -29,12 +28,6 @@ func NewUserHandler(userService service.UserService) UserHandler {
 	return &userHandler{
 		UserService: userService,
 	}
-}
-
-func (uh *userHandler) RegisterRoutes(e *echo.Echo) {
-	e.GET("/user/:id", uh.GetUserByID) // Get user by ID
-	e.POST("/user", uh.CreateUser)     // Create a new user
-	e.POST("/user/login", uh.Login)    // User login
 }
 
 func (uh *userHandler) GetUserByID(c echo.Context) error {
