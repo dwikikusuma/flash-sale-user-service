@@ -2,16 +2,17 @@ package api
 
 import (
 	"fmt"
+	"strconv"
+	"time"
+	"user-management-service/internal/entity"
+	"user-management-service/internal/service"
+
 	"github.com/golang-jwt/jwt/v5"
 	_ "github.com/golang-jwt/jwt/v5"
 	_ "github.com/labstack/echo-jwt/v4"
 	"github.com/labstack/echo/v4"
 	_ "github.com/labstack/echo/v4"
 	_ "github.com/labstack/echo/v4/middleware"
-	"strconv"
-	"time"
-	"user-management-service/internal/entity"
-	"user-management-service/internal/service"
 )
 
 type UserHandler interface {
@@ -21,12 +22,14 @@ type UserHandler interface {
 }
 
 type userHandler struct {
+	Secret      string
 	UserService service.UserService
 }
 
-func NewUserHandler(userService service.UserService) UserHandler {
+func NewUserHandler(userService service.UserService, secret string) UserHandler {
 	return &userHandler{
 		UserService: userService,
+		Secret:      secret,
 	}
 }
 
@@ -81,7 +84,7 @@ func (uh *userHandler) Login(c echo.Context) error {
 		"exp":      jwt.NewNumericDate(time.Now().Add(2 * time.Hour)),
 	})
 
-	tokenString, err := token.SignedString([]byte("secret"))
+	tokenString, err := token.SignedString([]byte(uh.Secret))
 	if err != nil {
 		return c.JSON(500, map[string]string{"error": "Failed to generate token"})
 	}
