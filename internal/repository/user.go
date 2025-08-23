@@ -1,6 +1,10 @@
 package repository
 
-import "user-management-service/internal/entity"
+import (
+	"user-management-service/internal/entity"
+
+	"gorm.io/gorm"
+)
 
 // UserRepository defines the interface for user-related data operations.
 type UserRepository interface {
@@ -18,11 +22,14 @@ type UserRepository interface {
 
 // userRepository is a concrete implementation of the UserRepository interface.
 type userRepository struct {
+	db *gorm.DB
 }
 
 // NewUserRepository creates and returns a new instance of userRepository.
-func NewUserRepository() UserRepository {
-	return &userRepository{}
+func NewUserRepository(db *gorm.DB) UserRepository {
+	return &userRepository{
+		db: db,
+	}
 }
 
 // users is an in-memory data store simulating a database for user entities.

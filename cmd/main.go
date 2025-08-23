@@ -22,11 +22,11 @@ func main() {
 		config.WithConfigType("yaml"),
 	)
 
-	_ = resource.InitDB(appConfig)
+	db := resource.InitDB(appConfig)
 
 	infrasturcture.InitLogger()
 
-	userRepo := repository.NewUserRepository()
+	userRepo := repository.NewUserRepository(db)
 	userService := service.NewUserService(userRepo)
 	userHandler := api.NewUserHandler(userService, appConfig.Secret.JWTSecret)
 
@@ -36,7 +36,7 @@ func main() {
 	e.Use(middleware.RateLimiterWithConfig(reqMiddleware.GetRateLimiter()))
 	e.Use(middleware.ContextTimeout(10 * time.Second))
 
-	routes.SetupRoutes(e, userHandler)
+	routes.SetupRoutes(e, userHandler, appConfig.Secret.JWTSecret)
 
 	e.Logger.Fatal(e.Start(":" + appConfig.App.Port))
 }
