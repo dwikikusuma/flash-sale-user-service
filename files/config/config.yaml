@@ -6,7 +6,7 @@ db:
   port: 3306
   user: admin
   password: password
-  name: order-db
+  name: user-db
 
 secret:
   jwtsecret: "secret"

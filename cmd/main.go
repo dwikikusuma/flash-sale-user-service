@@ -6,6 +6,7 @@ import (
 	infrasturcture "user-management-service/infrasturcture/log"
 	"user-management-service/internal/api"
 	"user-management-service/internal/repository"
+	"user-management-service/internal/resource"
 	"user-management-service/internal/service"
 	reqMiddleware "user-management-service/middleware"
 	"user-management-service/routes"
@@ -20,6 +21,8 @@ func main() {
 		config.WithConfigFile("config"),
 		config.WithConfigType("yaml"),
 	)
+
+	_ = resource.InitDB(appConfig)
 
 	infrasturcture.InitLogger()
 
