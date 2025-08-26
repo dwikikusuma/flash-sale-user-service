@@ -24,9 +24,10 @@ type userService struct {
 	AppConfig      config.Config
 }
 
-func NewUserService(userRepo repository.UserRepository) UserService {
+func NewUserService(userRepo repository.UserRepository, appConfig config.Config) UserService {
 	return &userService{
 		UserRepository: userRepo,
+		AppConfig:      appConfig,
 	}
 }
 
@@ -73,7 +74,7 @@ func (u *userService) Login(ctx context.Context, request *entity.LoginRequest) (
 		return "nil", err
 	}
 
-	if userDetail == nil || userDetail.Password != request.Password {
+	if userDetail == nil {
 		log.Logger.Warn().Str("username", request.Username).Msg("Invalid username or password")
 		return "", errors.New("invalid username or password")
 	}
@@ -96,6 +97,8 @@ func (u *userService) Login(ctx context.Context, request *entity.LoginRequest) (
 		"exp":      jwt.NewNumericDate(time.Now().Add(2 * time.Hour)),
 	})
 
+	log.Logger.Info().Str("Generating JWT token", u.AppConfig.Secret.JWTSecret).Msg("JWT Secret")
+	log.Logger.Info().Interface("token", u.AppConfig.Secret.JWTSecret).Msg("token created")
 	signedToken, err := token.SignedString([]byte(u.AppConfig.Secret.JWTSecret))
 	if err != nil {
 		log.Logger.Error().Err(err).Msg("Failed to generate token")

@@ -16,6 +16,7 @@ import (
 )
 
 func main() {
+	infrasturcture.InitLogger()
 	appConfig := config.LoadConfig(
 		config.WithConfigFolder([]string{"./files/config"}),
 		config.WithConfigFile("config"),
@@ -24,11 +25,9 @@ func main() {
 
 	db := resource.InitDB(appConfig)
 
-	infrasturcture.InitLogger()
-
 	userRepo := repository.NewUserRepository(db)
-	userService := service.NewUserService(userRepo)
-	userHandler := api.NewUserHandler(userService, appConfig.Secret.JWTSecret)
+	userService := service.NewUserService(userRepo, appConfig)
+	userHandler := api.NewUserHandler(userService)
 
 	e := echo.New()
 	e.Use(middleware.Logger())

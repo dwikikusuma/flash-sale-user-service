@@ -20,14 +20,12 @@ type UserHandler interface {
 }
 
 type userHandler struct {
-	Secret      string
 	UserService service.UserService
 }
 
-func NewUserHandler(userService service.UserService, secret string) UserHandler {
+func NewUserHandler(userService service.UserService) UserHandler {
 	return &userHandler{
 		UserService: userService,
-		Secret:      secret,
 	}
 }
 
